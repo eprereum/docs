@@ -7,16 +7,55 @@
 \title{EPR-ereum \\ bridging different worlds}
 \author{Benjamin Bollen}
 \maketitle
-\abstract{We present a pragmatic proposal to scale the capacity of decentralised applications on public Ethereum. We also discuss how this proposal is complementary to the work done on Proof-of-Stake Casper and Truebit; and how it falls in a different category than Cosmos and Polkadot based on the different problem it is trying to solve for.
-%The presentation builds on theFurthermore, we try to structure the marketplacedecentralised 
+%\abstract{}
+\section*{Overview}
+Proof-of-Work mining successfully secures Ethereum, however it does not allow the computational power of Ethereum to scale as more full nodes join the network.
 
-This is }
+We present an overlay protocol to scale the capacity of decentralised applications on public Ethereum. Our solution manages all value on Ethereum and provides an on-chain marketplace for pooling computational resources of full nodes allowing them to contribute and earn gas rewards linearly from the execution power they provide to Ethereum.
 
-\section*{Pre-ramble}
+The solution does not modify the scaling properties of Ethereum directly, rather it aims to get more computational \emph{gas mileage} out of a single transaction by minimising the verification burden put on the Proof-of-Work miners.  To this end we introduce a Byzantine fault-tolerant, staked meta-consensus mechanism. This mechanism allows us to scale computational capacity with the number of groups of nodes available.  By moving the verification burden away from the Proof-of-Work miners we bypass the Verifiers Dilemma while retaining the full replay history of Ethereum.
 
-First off, this is not a grandstanding exercise to claim any major solutions; nor is it a research paper that would hold an academic standard.  It probably should be a blog-post, but up to today the author has failed to utilise his Medium account.  Additionally most of the merit of the proposal here goes to many people who keep working hard to advance the state-of-the-art in decentralisation technology, and the author will attempt to acknowledge them duly at the end.  That said, the author hopes that despite the informal tone and self-deprecating humour, the readers will find value in the ideas presented.
+We detail the protocol and discuss an early analysis of attack vectors. We imagine possible use-cases and review the gains by enabling Eprereum for the application. We place this proposal in relation to existing work on scaling Ethereum.
+%We discuss how our proposal is complementary to the work done on Proof-of-Stake Casper and Truebit; and how it falls in a different category than Cosmos and Polkadot based on the different problem it solves for. % We highlight this is not a side channel approach, as the objective is to explicitly keep all valuable state on Ethereum after every transaction completes
 
-EPR-ereum, \textipa{/"@prIr:@m/}\footnote{The author does not know how to write IPA, but it looks cute.}, takes the name from the Einstein-Podolsky-Rosen (EPR) paradox, on particle entanglement and a more recent conjecture in physics, \mbox{$\text{ER}=\text{EPR}$}, stating an equivalence between wormholes and such entangled particles to capture the core idea of this proposal, but really, it's a cheap shot at finding a name, and at best a mnemonic trick for physicists\footnote{\label{corefootnote}The core of this proposal is to realise that the consensus algorithm of a blockchain effectively defines the \textit{laws of nature} for the application running on top. For Proof-of-Work consensus this implies the Verifiers Dilemma that keeps the gas price in the case of Ethereum high; for a Tendermint consensus-based chain this implication does not follow. We aim to exploit that to strengthen the execution power of public Ethereum.  The over-stretched analogy to physics here is that a \emph{portal} contract on public Ethereum can function as an escrow-protected callback function to a mirror-chain of the public Ethereum. This mirror-chain functions as parallel universe, with different laws of nature, in particular in this chain the calling contract can bypass the Verifiers Dilemma it encounters on the Ethereum chain.  Results from execution can be sent back through }.  There is no argument to actual physics here and the rest of the paper is effectively an expansion of footnote \ref{corefootnote}.
+
+\section{It's all about gas}
+% describe gas and relation to Ether. (pick up later for EPR token for organisation
+% present the problem: proof-of-work implies verifiers dilemma;
+% cost of transaction execution high because verifiers dilemma
+% Tendermint chains have known validators (counter to POW) so can share gas rewards; no race.
+% Implement EPRBlockGasLimit.
+
+In Ethereum gas accounts for every execution step.  A transaction includes a \emph{gas price} and a \emph{gas limit}.  The gas limit sets the maximum gas that can be burnt during the execution of this transaction.  When the execution completes the total gas used is deducted from the account balance of the transaction \emph{sender} at the set gas price\footnote{The gas price is set in Ether per gas [ETH], where gas is a number.}.
+
+In late spring of 2017 a steep increase in the number of transactions processed on the Ethereum blockchain has been registered.  All the while the average gas used per transaction has remained in first approximation constant. The accompanying higher market valuation of Ether had the price per transaction sky-rocket. In response the average gas price has started a correction downwards at the time of this writing. [graph]
+
+This demonstrates that the Ethereum protocol has scaled successfully under an increase of the number of transactions. The events have raised new questions though:
+\begin{enumerate}
+ \item How can a demand for high-gas transactions be supported?
+ \item Can a market mechanism be conceived that drives the gas cost down to the actual computational cost?
+\end{enumerate}
+The underlying question is, however, \textit{why do we not see an upward trend in the gas used per transaction?} Plenty of projects have ambitious goals 
+\section{Bridging different worlds}
+% argue: minimal change, reuse tested logic in virtual level where possible.
+% present top-view of solution: virtual BFT meta-consensus mechanism
+% nodes in this meta consensus are in themselves BFT Eprereum chains consistent of Eprereum nodes
+\section{Connecting the wires}
+% On ETH memory-pool contract to process results
+% GasLimit; charged used gas or 80% of GasLimit which ever one is higher
+\section{Steering network health}
+
+% ------- DRAFT
+
+%The core of this proposal is to realise that the consensus algorithm of a blockchain effectively defines the \textit{laws of nature} for the application running on top. For Proof-of-Work consensus this implies the Verifiers Dilemma that keeps the gas price in the case of Ethereum high; for a Tendermint consensus-based chain this implication does not follow. We aim to exploit that to strengthen the execution power of public Ethereum.  The over-stretched analogy to physics here is that a \emph{portal} contract on public Ethereum can function as an escrow-protected callback function to a mirror-chain of the public Ethereum. This mirror-chain functions as parallel universe, with different laws of nature, in particular in this chain the calling contract can bypass the Verifiers Dilemma it encounters on the Ethereum chain.  Results from execution can be sent back through
+
+%\section*{Pre-ramble}
+%
+%First off, this is not a grandstanding exercise to claim any major solutions; nor is it a research paper that would hold an academic standard.  It probably should be a blog-post, but up to today the author has failed to utilise his Medium account.  Additionally most of the merit of the proposal here goes to many people who keep working hard to advance the state-of-the-art in decentralisation technology, and the author will attempt to acknowledge them duly at the end.  That said, the author hopes that despite the informal tone and self-deprecating humour, the readers will find value in the ideas presented.
+%
+%EPR-ereum, \textipa{/"@prIr:@m/}\footnote{The author does not know how to write IPA, but it looks cute.}, takes the name from the Einstein-Podolsky-Rosen (EPR) paradox, on particle entanglement and a more recent conjecture in physics, \mbox{$\text{ER}=\text{EPR}$}, stating an equivalence between wormholes and such entangled particles to capture the core idea of this proposal, but really, it's a cheap shot at finding a name, and at best a mnemonic trick for physicists\footnote{\label{corefootnote}The core of this proposal is to realise that the consensus algorithm of a blockchain effectively defines the \textit{laws of nature} for the application running on top. For Proof-of-Work consensus this implies the Verifiers Dilemma that keeps the gas price in the case of Ethereum high; for a Tendermint consensus-based chain this implication does not follow. We aim to exploit that to strengthen the execution power of public Ethereum.  The over-stretched analogy to physics here is that a \emph{portal} contract on public Ethereum can function as an escrow-protected callback function to a mirror-chain of the public Ethereum. This mirror-chain functions as parallel universe, with different laws of nature, in particular in this chain the calling contract can bypass the Verifiers Dilemma it encounters on the Ethereum chain.  Results from execution can be sent back through }.  There is no argument to actual physics here. It's worth noting that the rest of the article is an expansion of that footnote \ref{corefootnote}; so you can read that and call it a day.
+%
+%Lastly, the author hopes that the comical tone will help the readers assert that this not intended to be (yet another) \emph{Minimum Viable Whitepaper}.  Rather the advent of the token economy puts additional pressure on the infrastructure in this space, and raises the need to scale the capacity of the backbone faster.  This is the context
 %- market for execution price
 %- parallel chain; full mirror of Ethereum state, but through portal contract call into parallel chain where gasprice is as agreed in Ethereum 
 
