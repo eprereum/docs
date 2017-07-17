@@ -13,9 +13,9 @@ Proof-of-Work mining successfully secures Ethereum, however it does not allow th
 
 We present an overlay protocol to scale the capacity of decentralised applications on public Ethereum. Our solution manages all value on Ethereum and provides an on-chain marketplace for pooling computational resources of full nodes allowing them to contribute and earn gas rewards linearly from the execution power they provide to Ethereum.
 
-The solution does not modify the scaling properties of Ethereum directly, rather it aims to get more computational \emph{gas mileage} out of a single transaction by minimising the verification burden put on the Proof-of-Work miners.  To this end we introduce a Byzantine fault-tolerant, staked meta-consensus mechanism. This mechanism allows us to scale computational capacity with the number of groups of nodes available.  By moving the verification burden away from the Proof-of-Work miners we bypass the Verifiers Dilemma while retaining the full replay history of Ethereum.
+The solution does not modify the scaling properties of Ethereum directly, rather it aims to get more computational \emph{gas mileage} out of the same Ether by minimising the verification burden put on the Proof-of-Work miners.  To this end we introduce a Byzantine fault-tolerant, staked meta-consensus mechanism. This mechanism allows us to scale computational capacity with the number of groups of nodes available.  By moving the verification burden away from the Proof-of-Work miners we bypass the \emph{verifiers dilemma}\footnote{The verifiers dilemma states that the verification burden for honest miners in Nakamoto consensus systems must be small compared to the sealing effort lest the honest miners be vulnerable to attacks. We will discuss the dilemma in more detail further.} while retaining the full replay history of Ethereum.
 
-We detail the protocol and discuss an early analysis of attack vectors. We imagine possible use-cases and review the gains by enabling Eprereum for the application. We place this proposal in relation to existing work on scaling Ethereum.
+We detail the protocol and discuss an early analysis of attack vectors. We imagine possible use-cases and review the gains by enabling Eprereum for the application. At the end we place this proposal in relation to existing work on scaling Ethereum.
 %We discuss how our proposal is complementary to the work done on Proof-of-Stake Casper and Truebit; and how it falls in a different category than Cosmos and Polkadot based on the different problem it solves for. % We highlight this is not a side channel approach, as the objective is to explicitly keep all valuable state on Ethereum after every transaction completes
 
 
@@ -30,13 +30,16 @@ In Ethereum gas accounts for every execution step.  A transaction includes a \em
 
 In late spring of 2017 a steep increase in the number of transactions processed on the Ethereum blockchain has been registered.  All the while the average gas used per transaction has remained in first approximation constant. The accompanying higher market valuation of Ether had the price per transaction sky-rocket. In response the average gas price has started a correction downwards at the time of this writing. [graph]
 
-This demonstrates that the Ethereum protocol has scaled successfully under an increase of the number of transactions. The events have raised new questions though:
-\begin{enumerate}
- \item How can a demand for high-gas transactions be supported?
- \item Can a market mechanism be conceived that drives the gas cost down to the actual computational cost?
-\end{enumerate}
-The underlying question is, however, \textit{why do we not see an upward trend in the gas used per transaction?} Plenty of projects have ambitious goals 
+This demonstrates that the Ethereum protocol has scaled successfully under an increase of the number of transactions. However, it leaves unanswered how Ethereum can scale for more computationally intensive applications.  We will argue that it is not only the price that is prohibitive to build applications that consume more gas. It has been highlighted that Nakamoto consensus systems have an inherent requirement to keep the block validation to a mimimum.  Consequently this keeps the gas price for transactions validated by the Proof-of-Work miners high, as the total block fee, $f = \sum_{tx} \text{gas} \cdot \text{gasprice}$.  From this it is clear that for honest miners security and profitability are optimised with a supply of many low-gas, high-gas price transactions.
+
+The security that Proof-of-Work miners generate is rooted in the adversarial race the miners are in to solve the block sealing puzzle first.  Only the miner who contributes the block is awarded the block rewards and block fee.  Other miners are expected to validate the correctness of the transactions in a block for the good of the network without reward.  They obviously have an incentive to make sure the block does not contain invalid transactions, because that would invalidate all work they build on top of it.  Verifying transactions of mined blocks, however, carries the risk of falling behind on mining the new block.  This is a brief summary of what has been understood as the verifiers dilemma\footnote{see appendix for more details}[Teutsch].
+
+If the verifiers dilemma is implied by the Nakamoto consensus and its reward structure, then it can be avoided by examining other incentive structures.  The mining paradigm to date forms the foundation of the two biggest public blockchains %\footnote{in hashing power, or market capitalisation, or ...} 
+and as such our objective in this work is not to replace it.  Rather we will present an opt-in, overlay protocol that constructs a new scaling dimension for decentralised applications on Ethereum.
+
 \section{Bridging different worlds}
+
+
 % argue: minimal change, reuse tested logic in virtual level where possible.
 % present top-view of solution: virtual BFT meta-consensus mechanism
 % nodes in this meta consensus are in themselves BFT Eprereum chains consistent of Eprereum nodes
