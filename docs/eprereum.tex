@@ -15,7 +15,7 @@ We present an overlay protocol to scale the capacity of decentralised applicatio
 
 The solution does not modify the scaling properties of Ethereum directly, rather it aims to get more computational \emph{gas mileage} out of the same Ether by minimising the verification burden put on the Proof-of-Work miners.  To this end we introduce a Byzantine fault-tolerant, staked meta-consensus mechanism. This mechanism allows us to scale computational capacity with the number of groups of nodes available.  By moving the verification burden away from the Proof-of-Work miners we bypass the \emph{verifiers dilemma}\footnote{The verifiers dilemma states that the verification burden for honest miners in Nakamoto consensus systems must be small compared to the sealing effort lest the honest miners be vulnerable to attacks. We will discuss the dilemma in more detail further.} while retaining the full replay history of Ethereum.
 
-We detail the protocol and discuss an early analysis of attack vectors. We imagine possible use-cases and review the gains by enabling Eprereum for the application. At the end we place this proposal in relation to existing work on scaling Ethereum.
+We detail the protocol and discuss an early analysis of attack vectors. We describe possible use-cases and review the gains by enabling Eprereum for the application. At the end we place this proposal in relation to existing work on scaling Ethereum.
 %We discuss how our proposal is complementary to the work done on Proof-of-Stake Casper and Truebit; and how it falls in a different category than Cosmos and Polkadot based on the different problem it solves for. % We highlight this is not a side channel approach, as the objective is to explicitly keep all valuable state on Ethereum after every transaction completes
 
 
@@ -40,7 +40,7 @@ and as such our objective in this work is not to replace it.  Rather we will pre
 
 \section{Bridging different worlds}
 
-Going forward we define the results of the Proof-of-Work consensus of Ethereum to be true.  We note that a Nakamoto consensus engine can roll back state, however, our construction will be local to a block and as such invariant to which branch of the consensus engine eventually accumulates most work.
+Going forward we define the results of the Proof-of-Work consensus of Ethereum to be true.  We note that a Nakamoto consensus engine can roll back state, however, our construction will be relative to a block and as such local to whichever branch of the consensus engine eventually accumulates most work.
 
 We briefly introduce a notation. A transaction $t$ on Ethereum transforms the full state $S$ to a new state $S'$.  The Ethereum Virtual Machine (EVM) is explicitly constructed to be serial in its execution, so we can compose transactions:
 \begin{align}
@@ -56,21 +56,30 @@ For a transaction that calls a constant function at the end of its execution we 
 with $r$ the result returned from the function call $\tilde{t}_c$.
 
 While the execution of a single transaction is atomic and serialised, smart contract developers need to code smart contracts with the understanding that the order of transactions is not under their control as it is determined by the block formation of Proof-of-Work miners.  We therefore introduce an \textit{asynchronous callback} $\cdot$ composition we can use to construct an asynchronously composed transaction:
-\begin{align}
-	t = \tilde{t}_0 \left(\prod_{i=1}^{N} \circ \ \tilde{t}_i \circ \tilde{t}_{c, i} \right) \circ \tilde{t}_{N+1} \circ \left(\prod_{i=1}^N \cdot \ \tilde{t}_{r, i}\right),
+\begin{align} \label{GeneralTransaction}
+	t = \tilde{t}_0 \left(\prod_{i=1}^{N} \circ \ \tilde{t}_i \circ \tilde{t}_{c, i} \right) \circ \tilde{t}_{N+1} \circ \left(\prod_{i=1}^N \cdot \ t_{r, i}\right),
 \end{align}
-where $\tilde{t}_{c, i}$ call constant functions and $\tilde{t}_{r, i}$ call (non-constant) functions with the asynchronously returned result $r_i$.  Where we require that $\circ \ ( t_{r, 1} \cdot t_{r, 2} )$ must equal $\circ \ ( t_{r, 2} \cdot t_{r, 1} )$, as the result will be returned through the Nakamoto consensus algorithm, and no guarantee on the order can be given.  Note this is not more difficult than standard asynchronous programming as the program has no control over the scheduler that orders the asynchronous callbacks.
+where $\tilde{t}_{c, i}$ call constant functions and $t_{r, i}$ call (non-constant) functions with the asynchronously returned result $r_i$.  Where we require that $\circ \ ( t_{r, 1} \cdot t_{r, 2} )$ must equal $\circ \ ( t_{r, 2} \cdot t_{r, 1} )$, as the result will be returned through the Nakamoto consensus algorithm, and no guarantee on the order can be given.  Note this is not more difficult than standard asynchronous programming as the program has no control over the scheduler that orders the asynchronous callbacks.
 
 Without loss of generality we will further consider transactions of the form
-\begin{align}
-	t = \tilde{t} \circ \tilde{t}_c \cdot \tilde{t}_r,
+\begin{align} \label{BasicTransaction}
+	t = \tilde{t} \circ \tilde{t}_c \cdot t_r,
 \end{align}
-where $\tilde{t}$ and $\tilde{t}_r$ write to the Ethereum state, and $\tilde{t}_c$ only reads from the Ethereum state, returning a single result $r$.
+where $\tilde{t}$ and $t_r$ write to the Ethereum state, and $\tilde{t}_c$ only reads from the Ethereum state, returning a single result $r$.
 
 As an overlay protocol on Ethereum, all Eprereum nodes are constructed to verify the Ethereum blockchain.  As a result, we can use smart contracts on Ethereum to construct a deterministic, global\footnote{Note that this global symmetry is only valid under the stated assumption that the Eprereum network is invariant under the probabilistic finalisation of Ethereum.  Here without loss of generality we assume that the global symmetry is valid, but this is a requirement for an implementation to observe.} one-to-many communication channel without incurring an overhead on the number of Eprereum nodes in the network.
 
 Communication in the other direction (from Eprereum nodes back to Ethereum), however, is expensive as it requires transactions to be validated by the Proof-of-Work miners at a high gas price.
 
+With the understanding that the execution of $\tilde{t}_c$ in (\ref{GeneralTransaction}, \ref{BasicTransaction}) only requires read-access to the Ethereum state, we construct Eprereum as an overlay protocol to execute those constant function calls off the Ethereum blockchain.  In return we have to incur an overhead on Ethereum in a Byzantine fault-tolerant meta-consensus process that resolves whether the results $r$ returned to Ethereum in (replicated) transactions $t_r$ have reached consensus.
+
+For this construction to be worthwhile two assumptions need to be fulfilled. The incentive structure for Eprereum must be such that the verifiers dilemma is circumvented and honest nodes can benefit from high-gas, low gas price transactions.  Secondly, the overhead incurred by the meta-consensus process needs to be offset by a lower gas price on Eprereum than on Ethereum.
+
+This second condition is easily quantified.  If we call $g_0$ the gas consumed by $\tilde{t}$ in (\ref{BasicTransaction}), $g_c$ the gas consumed by $\tilde{t}_c$, and $g_\text{m}$ the gas consumed by the meta-consensus for concluding $r$ to be true, then $g_0$ and $g_m$ are charged at the Ethereum gas price $p_\text{ETH}$.  If we would simply execute $\tilde{t}_c$ as a normal function call on Ethereum, we would save the gas cost of the overhead incurred by the meta-consensus, however, if we can execute $\tilde{t}_c$ at an Eprereum gas price $0 < p_\text{EPR} < p_\text{ETH}$, we find that it is cheaper if 
+\begin{equation}
+	p_\text{EPR} < p_\text{ETH}\left( 1 - \frac{g_m}{g_c} \right).
+\end{equation}
+As $g_m$ is determined by the implementation of Eprereum and $g_c$ is known at compile time by the application calling on Eprereum, the decision to outsource $\tilde{t}_c$ to Eprereum can be made dynamically on Ethereum, ensuring that the gas price on Eprereum is effectively capped.
 % argue: minimal change, reuse tested logic in virtual level where possible.
 % present top-view of solution: virtual BFT meta-consensus mechanism
 % nodes in this meta consensus are in themselves BFT Eprereum chains consistent of Eprereum nodes
