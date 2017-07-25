@@ -76,10 +76,10 @@ With the understanding that the execution of $\tilde{t}_c$ in (\ref{GeneralTrans
 For this construction to be worthwhile two assumptions need to be fulfilled. The incentive structure for Eprereum must be such that the verifiers dilemma is circumvented and honest nodes can benefit from high-gas, low gas price transactions.  Secondly, the overhead incurred by the meta-consensus process needs to be offset by a lower gas price on Eprereum than on Ethereum.
 
 This second condition is easily quantified.  If we call $g_0$ the gas consumed by $\tilde{t}$ in (\ref{BasicTransaction}), $g_c$ the gas consumed by $\tilde{t}_c$, and $g_\text{m}$ the gas consumed by the meta-consensus for concluding $r$ to be true, then $g_0$ and $g_m$ are charged at the Ethereum gas price $p_\text{ETH}$.  If we would simply execute $\tilde{t}_c$ as a normal function call on Ethereum, we would save the gas cost of the overhead incurred by the meta-consensus, however, if we can execute $\tilde{t}_c$ at an Eprereum gas price $0 < p_\text{EPR} < p_\text{ETH}$, we find that it is cheaper if 
-\begin{equation}
+\begin{equation} \label{EprCap}
 	p_\text{EPR} < p_\text{ETH}\left( 1 - \frac{g_m}{g_c} \right).
 \end{equation}
-As $g_m$ is determined by the implementation of Eprereum and $g_c$ is known at compile time by the application calling on Eprereum, the decision to outsource $\tilde{t}_c$ to Eprereum can be made dynamically on Ethereum, ensuring that the gas price on Eprereum is effectively capped.
+As $g_m$ is determined by the implementation of Eprereum and a lower bound on $g_c$ is known at compile time by the application calling on Eprereum, the decision to outsource $\tilde{t}_c$ to Eprereum can be made dynamically on Ethereum, ensuring that the gas price on Eprereum is effectively capped by (\ref{EprCap}).
 % argue: minimal change, reuse tested logic in virtual level where possible.
 % present top-view of solution: virtual BFT meta-consensus mechanism
 % nodes in this meta consensus are in themselves BFT Eprereum chains consistent of Eprereum nodes
