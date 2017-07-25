@@ -42,11 +42,7 @@ and as such our objective in this work is not to replace it.  Rather we will pre
 
 Going forward we define the results of the Proof-of-Work consensus of Ethereum to be true.  We note that a Nakamoto consensus engine can roll back state, however, our construction will be local to a block and as such invariant to which branch of the consensus engine eventually accumulates most work.
 
-As an overlay protocol on Ethereum, all Eprereum nodes are constructed to verify the Ethereum blockchain.  As a result, we can use smart contracts on Ethereum to construct a deterministic, global\footnote{Note that this global symmetry is only valid under the stated assumption that the Eprereum network is invariant under the probabilistic finalisation of Ethereum.  Here without loss of generality we assume that the global symmetry is valid, but this is a requirement for an implementation to observe.} one-to-many communication channel without incurring an overhead on the number of Eprereum nodes in the network.
-
-Communication in the other direction (from Eprereum nodes back to Ethereum), however, is expensive as it requires transactions to be validated by the Proof-of-Work miners at a high gas price.
-
-A transaction $t$ on Ethereum transforms the full state $S$ to a new state $S'$.  The Ethereum Virtual Machine (EVM) is explicitly constructed to be serial in its execution, so we can compose transactions:
+We briefly introduce a notation. A transaction $t$ on Ethereum transforms the full state $S$ to a new state $S'$.  The Ethereum Virtual Machine (EVM) is explicitly constructed to be serial in its execution, so we can compose transactions:
 \begin{align}
 	t_1 \circ t_2&: S \rightarrow S'' \\
 	\text{where } t_1&: S \rightarrow S',
@@ -59,17 +55,22 @@ For a transaction that calls a constant function at the end of its execution we 
 \end{align}
 with $r$ the result returned from the function call $\tilde{t}_c$.
 
-While the execution of a single transaction is atomic and serialised, smart contract developers need to code smart contracts with the understanding that the order of transactions is not under their control as it is determined by the block formation of Proof-of-Work miners.  We therefore introduce an \textit{asynchronous callback} $\cdot$ composition we can use to construct a composed transaction:
+While the execution of a single transaction is atomic and serialised, smart contract developers need to code smart contracts with the understanding that the order of transactions is not under their control as it is determined by the block formation of Proof-of-Work miners.  We therefore introduce an \textit{asynchronous callback} $\cdot$ composition we can use to construct an asynchronously composed transaction:
 \begin{align}
 	t = \tilde{t}_0 \left(\prod_{i=1}^{N} \circ \ \tilde{t}_i \circ \tilde{t}_{c, i} \right) \circ \tilde{t}_{N+1} \circ \left(\prod_{i=1}^N \cdot \ \tilde{t}_{r, i}\right),
 \end{align}
-where $\tilde{t}_{c, i}$ call constant functions and $\tilde{t}_{r, i}$ call (non-constant) functions with the asynchronously returned result $r_i$.  Where we require that $\circ \ ( t_{r, 1} \cdot t_{r, 2} )$ must equal $\circ \ ( t_{r, 2} \cdot t_{r, 1} )$, as the result will be returned through the Nakamoto consensus algorithm, and no guarantee on the order can be given.  Note that this not more difficult than standard asynchronous programming as the program has no control over the scheduler that orders the asynchronous callbacks.
+where $\tilde{t}_{c, i}$ call constant functions and $\tilde{t}_{r, i}$ call (non-constant) functions with the asynchronously returned result $r_i$.  Where we require that $\circ \ ( t_{r, 1} \cdot t_{r, 2} )$ must equal $\circ \ ( t_{r, 2} \cdot t_{r, 1} )$, as the result will be returned through the Nakamoto consensus algorithm, and no guarantee on the order can be given.  Note this is not more difficult than standard asynchronous programming as the program has no control over the scheduler that orders the asynchronous callbacks.
 
 Without loss of generality we will further consider transactions of the form
 \begin{align}
 	t = \tilde{t} \circ \tilde{t}_c \cdot \tilde{t}_r,
 \end{align}
 where $\tilde{t}$ and $\tilde{t}_r$ write to the Ethereum state, and $\tilde{t}_c$ only reads from the Ethereum state, returning a single result $r$.
+
+As an overlay protocol on Ethereum, all Eprereum nodes are constructed to verify the Ethereum blockchain.  As a result, we can use smart contracts on Ethereum to construct a deterministic, global\footnote{Note that this global symmetry is only valid under the stated assumption that the Eprereum network is invariant under the probabilistic finalisation of Ethereum.  Here without loss of generality we assume that the global symmetry is valid, but this is a requirement for an implementation to observe.} one-to-many communication channel without incurring an overhead on the number of Eprereum nodes in the network.
+
+Communication in the other direction (from Eprereum nodes back to Ethereum), however, is expensive as it requires transactions to be validated by the Proof-of-Work miners at a high gas price.
+
 % argue: minimal change, reuse tested logic in virtual level where possible.
 % present top-view of solution: virtual BFT meta-consensus mechanism
 % nodes in this meta consensus are in themselves BFT Eprereum chains consistent of Eprereum nodes
