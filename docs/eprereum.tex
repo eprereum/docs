@@ -81,6 +81,10 @@ This second condition is easily quantified.  If we call $g_0$ the gas consumed b
 \end{equation}
 As $g_m$ is determined by the implementation of Eprereum and a lower bound on $g_c$ is known at compile time by the application calling on Eprereum, the decision to outsource $\tilde{t}_c$ to Eprereum can be made dynamically on Ethereum, ensuring that the gas price on Eprereum is effectively capped by (\ref{EprCap}).
 
+To address the ability for Eprereum nodes to execute high-gas calls, Eprereum nodes are orchestrated by smart contracts on Ethereum.  From the perspective of the Eprereum nodes this sets rules of interaction that govern the rewards and deposits they can earn and loose while operating in service of Ethereum requests.
+
+To optimise the signal-to-noise ratio for Eprereum to Ethereum communication, the Eprereum nodes are grouped and the actions of the group are staked by the combined stake of all nodes in the group. Actions of Eprereum groups are given to Ethereum through Interblockchain Communication (IBC) messages designed to optimise the communication cost for the meta-consensus process and the Eprereum network orchestration.
+
 % argue: minimal change, reuse tested logic in virtual level where possible.
 % present top-view of solution: virtual BFT meta-consensus mechanism
 % nodes in this meta consensus are in themselves BFT Eprereum chains consistent of Eprereum nodes
