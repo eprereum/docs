@@ -4,7 +4,7 @@
 
 \begin{document}
 
-\title{EPR-ereum \\ bridging different worlds}
+\title{EPR-ereum \\ bridging different worlds \\ \textbf{WARNING: unfinished draft}}
 \author{Benjamin Bollen}
 \maketitle
 %\abstract{}
@@ -80,6 +80,7 @@ This second condition is easily quantified.  If we call $g_0$ the gas consumed b
 	p_\text{EPR} < p_\text{ETH}\left( 1 - \frac{g_m}{g_c} \right).
 \end{equation}
 As $g_m$ is determined by the implementation of Eprereum and a lower bound on $g_c$ is known at compile time by the application calling on Eprereum, the decision to outsource $\tilde{t}_c$ to Eprereum can be made dynamically on Ethereum, ensuring that the gas price on Eprereum is effectively capped by (\ref{EprCap}).
+
 % argue: minimal change, reuse tested logic in virtual level where possible.
 % present top-view of solution: virtual BFT meta-consensus mechanism
 % nodes in this meta consensus are in themselves BFT Eprereum chains consistent of Eprereum nodes
