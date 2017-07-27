@@ -4,7 +4,7 @@
 
 \begin{document}
 
-\title{EPR-ereum \\ bridging different worlds \\ \textbf{WARNING: unfinished draft}}
+\title{EPR-ereum \\ bridging different worlds \\ \textbf{WARNING: unfinished draft v0.1.12}}
 \author{Benjamin Bollen}
 \maketitle
 %\abstract{}
@@ -15,7 +15,7 @@ We present an overlay protocol to scale the capacity of decentralised applicatio
 
 The solution does not modify the scaling properties of Ethereum directly, rather it aims to get more computational \emph{gas mileage} out of the same Ether by minimising the verification burden put on the Proof-of-Work miners.  To this end we introduce a Byzantine fault-tolerant, staked meta-consensus mechanism. This mechanism allows us to scale computational capacity with the number of groups of nodes available.  By moving the verification burden away from the Proof-of-Work miners we bypass the \emph{verifiers dilemma}\footnote{The verifiers dilemma states that the verification burden for honest miners in Nakamoto consensus systems must be small compared to the sealing effort lest the honest miners be vulnerable to attacks. We will discuss the dilemma in more detail further.} while retaining the full replay history of Ethereum.
 
-We detail the protocol and discuss an early analysis of attack vectors. We describe possible use-cases and review the gains by enabling Eprereum for the application. At the end we place this proposal in relation to existing work on scaling Ethereum.
+We detail the protocol; but we do not yet present implementation details.  This document is intended to convey a proposal and invite critique and corrections.  We discuss an early analysis of attack vectors. We describe possible use-cases and review the gains by enabling Eprereum for the application. At the end we place this proposal in relation to existing work on scaling Ethereum.
 %We discuss how our proposal is complementary to the work done on Proof-of-Stake Casper and Truebit; and how it falls in a different category than Cosmos and Polkadot based on the different problem it solves for. % We highlight this is not a side channel approach, as the objective is to explicitly keep all valuable state on Ethereum after every transaction completes
 
 
@@ -83,7 +83,11 @@ As $g_m$ is determined by the implementation of Eprereum and a lower bound on $g
 
 To address the ability for Eprereum nodes to execute high-gas calls, Eprereum nodes are orchestrated by smart contracts on Ethereum.  From the perspective of the Eprereum nodes this sets rules of interaction that govern the rewards and deposits they can earn and loose while operating in service of Ethereum requests.
 
-To optimise the signal-to-noise ratio for Eprereum to Ethereum communication, the Eprereum nodes are grouped and the actions of the group are staked by the combined stake of all nodes in the group. Actions of Eprereum groups are given to Ethereum through Interblockchain Communication (IBC) messages designed to optimise the communication cost for the meta-consensus process and the Eprereum network orchestration.
+To increase the signal-to-noise ratio for Eprereum to Ethereum communication, the Eprereum nodes are grouped and the actions of the group are staked by the combined stake of all nodes in the group. Actions of Eprereum groups are given to Ethereum through interblockchain communication (IBC) messages designed to optimise the communication cost for the meta-consensus process and the Eprereum network orchestration.  
+
+An Eprereum group itself is organised as a Tendermint Proof-of-Stake network that has its voting power reflected on Ethereum, where Eprereum tokens are equally bonded.  An Eprereum group itself though does not accept Ethereum call transactions.  It has specific transaction types to follow the Ethereum blocks as they are mined by Ethereum nodes and to self-organise the execution of calls $\tilde{t}_c$ as they occur on Ethereum. Eprereum nodes finally orchestrate to send interblockchain transactions back to the Ethereum to report on execution results and network staking.
+
+%If the Ethereum distributes the 
 
 % argue: minimal change, reuse tested logic in virtual level where possible.
 % present top-view of solution: virtual BFT meta-consensus mechanism
