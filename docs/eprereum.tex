@@ -67,10 +67,6 @@ Without loss of generality we will further consider transactions of the form
 \end{align}
 where $\tilde{t}$ and $t_r$ write to the Ethereum state, and $\tilde{t}_c$ only reads from the Ethereum state, returning a single result $r$.
 
-As an overlay protocol on Ethereum, all Eprereum nodes are constructed to verify the Ethereum blockchain.  As a result, we can use smart contracts on Ethereum to construct a deterministic, global\footnote{Note that this global symmetry is only valid under the stated assumption that the Eprereum network is invariant under the probabilistic finalisation of Ethereum.  Here without loss of generality we assume that the global symmetry is valid, but this is a requirement for an implementation to observe.} one-to-many communication channel without incurring an overhead on the number of Eprereum nodes in the network.
-
-Communication in the other direction (from Eprereum nodes back to Ethereum), however, is expensive as it requires transactions to be validated by the Proof-of-Work miners at a high gas price.
-
 With the understanding that the execution of $\tilde{t}_c$ in (\ref{GeneralTransaction}, \ref{BasicTransaction}) only requires read-access to the Ethereum state, we construct Eprereum as an overlay protocol to execute those constant function calls off the Ethereum blockchain.  In return we have to incur an overhead on Ethereum in a Byzantine fault-tolerant meta-consensus process that resolves whether the results $r$ returned to Ethereum in (replicated) transactions $t_r$ have reached consensus.
 
 For this construction to be worthwhile two assumptions need to be fulfilled. The incentive structure for Eprereum must be such that the verifiers dilemma is circumvented and honest nodes can benefit from high-gas, low gas price transactions.  Secondly, the overhead incurred by the meta-consensus process needs to be offset by a lower gas price on Eprereum than on Ethereum.
@@ -80,6 +76,12 @@ This second condition is easily quantified.  If we call $g_0$ the gas consumed b
 	p_\text{EPR} < p_\text{ETH}\left( 1 - \frac{g_m}{g_c} \right).
 \end{equation}
 As $g_m$ is determined by the implementation of Eprereum and a lower bound on $g_c$ is known at compile time by the application calling on Eprereum, the decision to outsource $\tilde{t}_c$ to Eprereum can be made dynamically on Ethereum, ensuring that the gas price on Eprereum is effectively capped by (\ref{EprCap}).
+
+\subsection{Setting the rules}
+
+As an overlay protocol on Ethereum, all Eprereum nodes are constructed to verify the Ethereum blockchain.  As a result, we can use smart contracts on Ethereum to construct a deterministic, global\footnote{Note that this global symmetry is only valid under the stated assumption that the Eprereum network is invariant under the probabilistic finalisation of Ethereum.  Here without loss of generality we assume that the global symmetry is valid, but this is a requirement for an implementation to observe.} one-to-many communication channel without incurring an overhead on the number of Eprereum nodes in the network.
+
+Communication in the other direction (from Eprereum nodes back to Ethereum), however, is expensive as it requires transactions to be validated by the Proof-of-Work miners at a high gas price.
 
 To address the ability for Eprereum nodes to execute high-gas calls, Eprereum nodes are orchestrated by smart contracts on Ethereum.  From the perspective of the Eprereum nodes this sets rules of interaction that govern the rewards and deposits they can earn and loose while operating in service of Ethereum requests.
 
