@@ -4,7 +4,7 @@
 
 \begin{document}
 
-\title{EPR-ereum \\ bridging different worlds \\ \textbf{WARNING: unfinished draft v0.1.12}}
+\title{EPR-ereum \\ bridging different worlds \\ \textbf{WARNING: unfinished draft v0.1.15 \\ all content subject to change and corrections}}
 \author{Benjamin Bollen}
 \maketitle
 %\abstract{}
@@ -59,7 +59,7 @@ While the execution of a single transaction is atomic and serialised, smart cont
 \begin{align} \label{GeneralTransaction}
 	t = \tilde{t}_0 \left(\prod_{i=1}^{N} \circ \ \tilde{t}_i \circ \tilde{t}_{c, i} \right) \circ \tilde{t}_{N+1} \circ \left(\prod_{i=1}^N \cdot \ t_{r, i}\right),
 \end{align}
-where $\tilde{t}_{c, i}$ call constant functions and $t_{r, i}$ call (non-constant) functions with the asynchronously returned result $r_i$.  Where we require that $\circ \ ( t_{r, 1} \cdot t_{r, 2} )$ must equal $\circ \ ( t_{r, 2} \cdot t_{r, 1} )$, as the result will be returned through the Nakamoto consensus algorithm, and no guarantee on the order can be given.  Note this is not more difficult than standard asynchronous programming as the program has no control over the scheduler that orders the asynchronous callbacks.
+where $\tilde{t}_{c, i}$ call constant functions and $t_{r, i}$ call (non-constant) functions with the asynchronously returned result $r_i$.  We require that $\circ \ ( t_{r, 1} \cdot t_{r, 2} )$ must equal $\circ \ ( t_{r, 2} \cdot t_{r, 1} )$, as the result will be returned through the Nakamoto consensus algorithm, and no guarantee on the order can be given.  Note this is not more difficult than standard asynchronous programming as the program has no control over the scheduler that orders the asynchronous callbacks.
 
 Without loss of generality we will further consider transactions of the form
 \begin{align} \label{BasicTransaction}
@@ -88,6 +88,17 @@ To address the ability for Eprereum nodes to execute high-gas calls, Eprereum no
 To increase the signal-to-noise ratio for Eprereum to Ethereum communication, the Eprereum nodes are grouped and the actions of the group are staked by the combined stake of all nodes in the group. Actions of Eprereum groups are given to Ethereum through interblockchain communication (IBC) messages designed to optimise the communication cost for the meta-consensus process and the Eprereum network orchestration.  
 
 An Eprereum group itself is organised as a Tendermint Proof-of-Stake network that has its voting power reflected on Ethereum, where Eprereum tokens are equally bonded.  An Eprereum group itself though does not accept Ethereum call transactions.  It has specific transaction types to follow the Ethereum blocks as they are mined by Ethereum nodes and to self-organise the execution of calls $\tilde{t}_c$ as they occur on Ethereum. Eprereum nodes finally orchestrate to send interblockchain transactions back to the Ethereum to report on execution results and network staking.
+
+\subsection{Accepting results}
+
+Let an Eprereum group $G^\alpha$ be composed of Eprereum nodes $g^\alpha_i$ each represented by a public key. We construct a \texttt{CommitResult} transaction to contain a \texttt{Commit} as the hash of two merkleroots: first, the merkleroot of a set of results to be returned, where the blockhash of the Ethereum block associated with these results is the first leaf; second, the merkleroot of the set of signatures of the results root signed by the Eprereum nodes $g^\alpha_i$ in group $G^\alpha$.
+
+A given block in the Ethereum blockchain can introduce a new ordered set of calculation requests when smart contracts calls on the Eprereum scheduling contract.  These jobs $\tilde{t}_{c, m}$ with $m=1\dots N$ have accompanying results $r_m$.  However, if our objective is to outsource the calculation of $r_m$ to the Eprereum groups $G^\alpha$, then we want to not calculate $\tilde{t}_{c,m}$ on Ethereum (even though possible - see (\ref{EprCap}) for the sensibility-inequality) and as such $r_m$ is unknown.
+
+
+
+
+\subsection{Divide and conquer}
 
 %If the Ethereum distributes the 
 
