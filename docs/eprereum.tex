@@ -95,8 +95,18 @@ Let an Eprereum group $G^\alpha$ be composed of Eprereum nodes $g^\alpha_i$ each
 
 A given block in the Ethereum blockchain can introduce a new ordered set of calculation requests when smart contracts calls on the Eprereum scheduling contract.  These jobs $\tilde{t}_{c, m}$ with $m=1\dots N$ have accompanying results $r_m$.  However, if our objective is to outsource the calculation of $r_m$ to the Eprereum groups $G^\alpha$, then we want to not calculate $\tilde{t}_{c,m}$ on Ethereum (even though possible - see (\ref{EprCap}) for the sensibility-inequality) and as such $r_m$ is unknown.
 
+To accept a result $r_m$ back into Ethereum we require that all groups $G^{\{\alpha\}_m}$ commit unanimously to the identical result for $r_m$.  Here we have noted $G^{\{\alpha\}_m}$ as the subset of all groups $G^\alpha$ that are required to return a result for $\tilde{t}_{c,m}$.  We will later detail how we can tune the subset selection rule to balance the total deposit staked by the groups for a correct answer with the scalability throughput of results returned.  For now, we can simply consider some groups returning the result.
 
+A group $G^\alpha$ can calculate for an ordered set of job requests $\tilde{t}_{c,m}$ in a given Ethereum block the corresponding results $r_m^\alpha$.  These results combined with the blockhash of the Ethereum block they refer to provides a merkleroot that all Eprereum nodes in the group can sign.  These signatures can be stored in a second merkletree, the root of which can be hashed together with the results root to obtain the groups \texttt{Commit} $C^\alpha$.
 
+The groups commit $C^\alpha$ for a set of job requests $\tilde{t}_{c,m}$ provides a proof point to the Ethereum blockhash, the results $r^\alpha_m$ the group claims to be true, and the signatures of the Eprereum nodes $g^\alpha_i$ in this group $G^\alpha$ signing off on these results.
+
+The group that has done the work to calculate $r_m$ now needs to make this claim to the Ethereum network, but without revealing the results, as that would allow other groups to copy the results and submit them without doing the work, and claiming the rewards nonetheless.  Hence in order to ensure that claims by different groups $G^1, G^2$ have been calculated independently, the groups do not yet share their commit $C^1, C^2$ but use it encrypt the results $r^1_m, r^2_m$ as follows.
+
+First note that any node $g^\alpha_i$ can use the commit $C^\alpha$ as a proof to speak on behalf of the group $G^\alpha$, as it proofs their signatures.  To encrypted the results any node in the group generates privately a secret bitstring $S$ that is a concatenation of bitstrings $s_m$ for every result $r_m$, where the length of $s_m$ is minimal to guarantee that no two $s_m$ repeat.  The node then submits to Ethereum the encrypted results $e_m^\alpha$:
+\begin{align}
+		e_m^\alpha = r_m^\alpha \oplus H(s_m, C^\alpha)
+\end{align}
 
 \subsection{Divide and conquer}
 
