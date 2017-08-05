@@ -4,7 +4,7 @@
 
 \begin{document}
 
-\title{EPR-ereum \\ bridging different worlds \\ \textbf{WARNING: unfinished draft v0.1.15 \\ all content subject to change and corrections}}
+\title{EPR-ereum \\ bridging different worlds \\ \textbf{WARNING: unfinished draft v0.1.16 \\ all content subject to change and corrections}}
 \author{Benjamin Bollen}
 \maketitle
 %\abstract{}
@@ -110,8 +110,15 @@ First note that any node $g^\alpha_i$ can use the commit $C^\alpha$ as a proof t
 
 It suffices for a single node member $g_i^\alpha$ of the group to commit the encrypted results on behalf of the whole group $G^\alpha$, because if any other group member  $g_j^\alpha$ would later refute the results, the committing node can present the merkle proof of the refuting node's signature to the root $C^\alpha$; failure to present the merkle proof is sufficient cause to take the deposits of the committing node.  As a result the combined deposits of all the group members is used to stake in favour of the results $e^\alpha_m$.
 
-With all encrypted results $e^{\{\alpha\}_m}_m$ received and staked on Ethereum
+With all encrypted results $e^{\{\alpha\}_m}_m$ received and staked on Ethereum for all groups $G^{\{\alpha\}_m}$ required to commit results, the first phase is closed.  Note that as the Eprereum groups can reach consensus much faster than Ethereum, in the ideal case all encrypted results are included in the next (two) Ethereum blocks mined following the block requesting the results.
 
+% ATTACK: undoing first phase lock by different ETH branch; "short time reordering attack"
+When Eprereum nodes observe a sufficient staking for the first commit phase, they can initiate the second phase.  In order to reveal the results $e^\alpha_m$ that are saved on Ethereum the committing node $g^\alpha_i$ needs only to submit the group commit $C^\alpha$ and the node secret $S$ for Ethereum to calculate the results $r^\alpha_m$ claimed by the group:
+\begin{align}
+		r_m^\alpha = e_m^\alpha \oplus H(s_m, C^\alpha)
+\end{align}
+
+For any $m$ the result $r_m$ is accepted if all results revealed $r^{\{\alpha\}_m}_m$ for all $\{\alpha\}_m$ are identical.
 \subsection{Divide and conquer}
 
 %If the Ethereum distributes the 
