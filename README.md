@@ -1,5 +1,7 @@
 # Eprereum
 
+[![Join the chat at https://gitter.im/eprereum/docs](https://badges.gitter.im/eprereum/docs.svg)](https://gitter.im/eprereum/docs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Eprereum is a network to build the computational capacity of Ethereum applications.  Requests for computation are made by Ethereum applications.  Results are computed by the Eprereum network and rewarded to Eprereum nodes on Ethereum.
 
 The Eprereum network stands in service of the Ethereum network.  In this sense it leverages the security properties of the Proof-of-Work miners and in return provides scalable computational ressources to Ethereum applications.
