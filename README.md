@@ -10,4 +10,11 @@ Results are computed asynchronously and accepted over a meta-consensus layer.  T
 
 ## project status
 
-These are very early days.  There are no full-time resources yet dedicated; some of the foundational ideas have been put on paper (in this repository [WIP pdf](https://github.com/eprereum/docs/blob/master/docs/eprereum.pdf)). 
+These are very early days.  There are no full-time resources dedicated; there is no promise there will; some of the foundational ideas have been put on paper (in this repository, see [WIP pdf](https://github.com/eprereum/docs/blob/master/docs/eprereum.pdf)) and we invite early feedback.
+
+Currently, the objective is to solidify the protocol proposal, both by presenting the logic, and by implementing a simulation of the protocol.
+
+Comments, corrections and help is welcomed so reach out on [gitter](https://gitter.im/eprereum/docs) or be creative.
+
+Cheers,
+Ben
